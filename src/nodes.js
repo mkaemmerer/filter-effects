@@ -15,6 +15,8 @@ const createNode = type => attrs => {
 };
 
 //Node types
+export const sourceGraphic       = createNode('sourceGraphic');
+export const sourceAlpha         = createNode('sourceAlpha');
 export const feBlend             = createNode('feBlend');
 export const feColorMatrix       = createNode('feColorMatrix');
 export const feComponentTransfer = createNode('feComponentTransfer');

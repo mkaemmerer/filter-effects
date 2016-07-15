@@ -1,9 +1,6 @@
 import match from './match';
 
 const interpret = (env, program) => {
-  const {type, next, result} = program;
-  let node;
-
   const process = match({
     sourceAlpha: () => ({
       ...env,

@@ -1,3 +1,5 @@
+import match from './match';
+
 export default class Free {
   constructor(type, next, result){
     this.type   = type;
@@ -12,24 +14,24 @@ export default class Free {
   }
 
   map(f){
-    switch(this.type){
-      case 'IMPURE':
-        const f_next = this.next
+    return match({
+      IMPURE: ({next}) => {
+        const f_next = next
           .map(inner => inner.map(f));
         return Free.impure(f_next);
-      case 'PURE':
-        return Free.pure(f(this.result));
-    }
+      },
+      PURE: ({result}) => Free.pure(f(result))
+    })(this);
   }
   flatten(){
-    switch(this.type){
-      case 'IMPURE':
-        const inner_next = this.next
+    return match({
+      IMPURE: ({next}) => {
+        const inner_next = next
           .map(inner => inner.flatten());
         return Free.impure(inner_next);
-      case 'PURE':
-        return this.result;
-    }
+      },
+      PURE: ({result}) => result
+    })(this);
   }
   flatMap(f){
     return this.map(f).flatten();

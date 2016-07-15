@@ -1,14 +1,15 @@
 import match from './match';
+import {matchOn} from './match';
 
 const interpret = (env, program) => {
-  const process = match({
+  const process = matchOn('nodeName')({
     sourceAlpha: () => ({
       ...env,
-      result: 'sourceAlpha'
+      result: 'SourceAlpha'
     }),
     sourceGraphic: () => ({
       ...env,
-      result: 'sourceGraphic'
+      result: 'SourceGraphic'
     }),
     _: node => {
       const output = {
@@ -35,7 +36,6 @@ const interpret = (env, program) => {
 
 const default_env = {id: 0, nodes: [], result: undefined};
 
-const run = program =>
-  interpret(default_env, program);
+const run = program => interpret(default_env, program);
 
 export default run;

@@ -5,9 +5,9 @@ import FilterEffect from './filter-effect';
 const liftF = cmd => Free.impure(cmd.map(Free.pure));
 const id    = x => x;
 
-const createNode = type => attrs => {
+const createNode = nodeName => attrs => {
   const node = new FilterEffect({
-    type,
+    nodeName,
     attrs,
     next: id
   });

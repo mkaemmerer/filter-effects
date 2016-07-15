@@ -1,8 +1,8 @@
 export default class FilterEffect {
-  constructor({type, attrs, next}){
-    this.type  = type;
-    this.attrs = attrs;
-    this.next  = next;
+  constructor({nodeName, attrs, next}){
+    this.nodeName = nodeName;
+    this.attrs    = attrs;
+    this.next     = next;
   }
   map(f){
     return new FilterEffect({
@@ -12,7 +12,7 @@ export default class FilterEffect {
   }
   toJS(){
     return {
-      type: this.type,
+      nodeName: this.nodeName,
       ...this.attrs
     };
   }

@@ -6,10 +6,16 @@ export default class FilterEffect {
   }
   map(f){
     return new FilterEffect({
-      type:  this.type,
-      attrs: this.attrs,
+      ...this,
       next:  x => f(this.next(x))
     });
+  }
+  traverse(f){
+    return f(this.next)
+      .map(x => new FilterEffect({
+        ...this,
+        next: x
+      }));
   }
   toJS(){
     return {

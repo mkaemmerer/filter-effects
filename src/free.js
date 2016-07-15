@@ -36,13 +36,11 @@ export default class Free {
   flatMap(f){
     return this.map(f).flatten();
   }
-  // foldMap(step, done){
-  //   switch(this.type){
-  //     case 'IMPURE':
-  //       const next = this.next.next(this);
-  //       return step(this.next).flatMap();
-  //     case 'PURE':
-  //       return done(this.result);
-  //   }
+  // foldFree(step, done){
+  //   return match({
+  //     IMPURE: ({next}) => step(next)
+  //       .flatMap(f => f.foldFree(step, done)),
+  //     PURE: ({result}) => done(result)
+  //   })(this);
   // }
 }

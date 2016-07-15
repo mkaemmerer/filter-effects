@@ -7,7 +7,7 @@ export default function match(cases){
     } else if(cases.hasOwnProperty('_')) {
       return cases['_'](object);
     } else {
-      throw new Error('Unmatched pattern');
+      throw new Error(`Unmatched pattern: ${type}`);
     }
   };
 }

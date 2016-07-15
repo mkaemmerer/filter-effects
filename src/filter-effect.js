@@ -10,13 +10,6 @@ export default class FilterEffect {
       next:  x => f(this.next(x))
     });
   }
-  traverse(f){
-    return f(this.next)
-      .map(x => new FilterEffect({
-        ...this,
-        next: x
-      }));
-  }
   toJS(){
     return {
       type: this.type,

@@ -1,14 +1,7 @@
 export default class FilterEffect {
-  constructor({nodeName, attrs, next}){
+  constructor({nodeName, attrs}){
     this.nodeName = nodeName;
     this.attrs    = attrs;
-    this.next     = next;
-  }
-  map(f){
-    return new FilterEffect({
-      ...this,
-      next:  x => f(this.next(x))
-    });
   }
   toJS(){
     return {

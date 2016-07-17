@@ -25,9 +25,9 @@ const interpret = (env, program) => {
   });
 
   return match({
-    IMPURE: ({next: node}) => {
+    IMPURE: ({next, result: node}) => {
       const next_env     = process(node);
-      const next_program = node.next(next_env.result);
+      const next_program = next(next_env.result);
       return interpret(next_env, next_program);
     },
     PURE:   () => env.nodes

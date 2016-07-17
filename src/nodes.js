@@ -2,14 +2,12 @@ import Free         from './free';
 import FilterEffect from './filter-effect';
 
 //Nodes
-const liftF = cmd => Free.impure(cmd.map(Free.pure));
-const id    = x => x;
+const liftF = cmd => Free.impure(Free.pure, cmd);
 
 const createNode = nodeName => attrs => {
   const node = new FilterEffect({
     nodeName,
-    attrs,
-    next: id
+    attrs
   });
   return liftF(node);
 };

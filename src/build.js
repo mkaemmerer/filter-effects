@@ -22,10 +22,11 @@ export function build(nodes, filterAttrs = {}){
 export function create(nodes, filterAttrs = {}){
   const svg = createElement({
     nodeName: 'svg',
+    height: '0',
     children: [{
       nodeName: 'defs',
-      children: [build(nodes, filterAttrs)]
+      children: [{nodeName: 'filter', children: nodes, ...filterAttrs}]
     }]
   });
-  document.appendChild(svg);
+  document.body.appendChild(svg);
 }

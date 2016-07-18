@@ -19,7 +19,7 @@ export function build(nodes, filterAttrs = {}){
   return createElement({nodeName: 'filter', children: nodes, ...filterAttrs});
 }
 
-export function run(nodes, filterAttrs = {}){
+export function create(nodes, filterAttrs = {}){
   const svg = createElement({
     nodeName: 'svg',
     children: [{

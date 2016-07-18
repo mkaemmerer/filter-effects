@@ -27,14 +27,14 @@ import * as n from './index';
 //   <feBlend mode="normal" in="ATTENUATED" in2="FULL_EFFECT" result="OUTPUT"/>
 // </filter>
 
-const crossFade = (x, y, amount) => Monad.do(function *() {
+const crossFade = (x, y, amt) => Monad.do(function *() {
   const attenuated = yield n.feColorMatrix({
     in: x,
     type: 'matrix',
-    values: `1 0 0   0 0
-             0 1 0   0 0
-             0 0 1   0 0
-             0 0 0 0.7 0`
+    values: `1 0 0  0     0
+             0 1 0  0     0
+             0 0 1  0     0
+             0 0 0 ${amt} 0`
   });
   const blend      = yield n.feBlend({
     in:  attenuated,
@@ -45,8 +45,7 @@ const crossFade = (x, y, amount) => Monad.do(function *() {
   return Monad.of(blend);
 });
 
-const program = Monad.do(function *() {
-  const source     = yield n.sourceGraphic();
+const innerShadow = source => Monad.do(function *() {
   const inverse    = yield n.feColorMatrix({
     in: source,
     type: 'matrix',
@@ -76,6 +75,12 @@ const program = Monad.do(function *() {
   const blend      = yield crossFade(source, full, 0.7);
 
   return Monad.of(blend);
+});
+
+const program = Monad.do(function *() {
+  const source = yield n.sourceGraphic();
+  const shadow = yield innerShadow(source);
+  return Monad.of(shadow);
 });
 
 const filterAttrs = {

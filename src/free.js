@@ -34,12 +34,4 @@ export default class Free {
   flatMap(f){
     return this.map(f).flatten();
   }
-  foldMap(step, done){
-    return match({
-      IMPURE: ({next, result}) =>
-        step(result)
-          .flatMap(x => next(x).foldMap(step, done)),
-      PURE: ({result}) => done(result)
-    })(this);
-  }
 }

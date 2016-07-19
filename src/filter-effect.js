@@ -1,24 +1,13 @@
 import Free from './free';
 
-//Filter effect class
-export default class FilterEffect {
-  constructor({nodeName, attrs}){
-    this.nodeName = nodeName;
-    this.attrs    = attrs;
-  }
-  toJS(){
-    return {
-      nodeName: this.nodeName,
-      ...this.attrs
-    };
-  }
-}
-
 //Nodes
 const liftF = cmd => Free.impure(Free.pure, cmd);
 
 const createNode = nodeName => attrs => {
-  const node = new FilterEffect({ nodeName, attrs });
+  const node = {
+    ...attrs,
+    nodeName
+  };
   return liftF(node);
 };
 

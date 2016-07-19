@@ -1,5 +1,4 @@
-import match from './match';
-import {matchOn} from './match';
+import match, {matchOn} from './match';
 
 // Convert a free monad representation into a JSON representation
 const interpret = (program) => {
@@ -9,10 +8,7 @@ const interpret = (program) => {
     sourceGraphic: ()   => env,
     _:             node => ({
       id:     env.id+1,
-      nodes:  [...env.nodes, {
-        ...node.toJS(),
-        result: env.id
-      }],
+      nodes:  [...env.nodes, { ...node, result: env.id }],
     })
   });
   const result = (env, node) => matchOn('nodeName')(node)({

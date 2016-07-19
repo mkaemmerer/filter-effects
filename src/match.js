@@ -1,4 +1,4 @@
-export const matchOn = key => cases => object => {
+export const matchOn = key => object => cases => {
   const type = object[key];
 
   if(cases.hasOwnProperty(type)) {

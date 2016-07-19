@@ -1,40 +1,40 @@
 import match from './match';
 import {matchOn} from './match';
 
-const default_env = {id: 0, nodes: [], result: undefined};
+// Convert a free monad representation into a JSON representation
+const default_env = {id: 0, nodes: []};
+const process = (env, node) => matchOn('nodeName')({
+  sourceAlpha:   () => env,
+  sourceGraphic: () => env,
+  _: node => {
+    const output = {
+      ...node.toJS(),
+      result: env.id
+    };
+    return {
+      id:     env.id+1,
+      nodes:  [...env.nodes, output],
+    };
+  }
+})(node);
+const result = (env, node) => matchOn('nodeName')({
+  sourceAlpha:   () => 'SourceAlpha',
+  sourceGraphic: () => 'SourceGraphic',
+  _:             () => env.id
+});
 const interpret = (env, program) => {
-  const process = matchOn('nodeName')({
-    sourceAlpha: () => ({
-      ...env,
-      result: 'SourceAlpha'
-    }),
-    sourceGraphic: () => ({
-      ...env,
-      result: 'SourceGraphic'
-    }),
-    _: node => {
-      const output = {
-        ...node.toJS(),
-        result: env.id
-      };
-      return {
-        id:     env.id+1,
-        nodes:  env.nodes.concat([output]),
-        result: env.id
-      };
-    }
-  });
-
   return match({
     IMPURE: ({next, result: node}) => {
-      const next_env     = process(node);
-      const next_program = next(next_env.result);
+      const next_result  = result(env, node);
+      const next_env     = process(env, node);
+      const next_program = next(result);
       return interpret(next_env, next_program);
     },
     PURE:   () => env.nodes
   })(program);
 };
 
+// Remove unused nodes from the output
 const prune = (nodes) => {
   const result = prune_once(nodes);
   return (result.length === nodes.length) ? result : prune(result);

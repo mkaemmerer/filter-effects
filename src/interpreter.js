@@ -20,7 +20,7 @@ const interpret = (program) => {
     sourceGraphic: () => 'SourceGraphic',
     _:             () => env.id
   });
-  return program.iterate(start, process, result).nodes;
+  return program.fold(start, process, result).nodes;
 };
 
 // Remove unused nodes from the output

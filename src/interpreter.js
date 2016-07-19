@@ -1,6 +1,7 @@
 import match from './match';
 import {matchOn} from './match';
 
+const default_env = {id: 0, nodes: [], result: undefined};
 const interpret = (env, program) => {
   const process = matchOn('nodeName')({
     sourceAlpha: () => ({
@@ -34,8 +35,19 @@ const interpret = (env, program) => {
   })(program);
 };
 
-const default_env = {id: 0, nodes: [], result: undefined};
+const prune = (nodes) => {
+  const result = prune_once(nodes);
+  return (result.length === nodes.length) ? result : prune(result);
+};
+const prune_once = (nodes) => {
+  const last      = nodes[nodes.length - 1];
+  const is_output = node => node === last;
+  const is_used   = node => nodes
+    .find(n => n.in === node.result || n.in2 === node.result);
+  return nodes.filter(n => is_output(n) || is_used(n));
+};
 
-const run = program => interpret(default_env, program);
+
+const run = program => prune(interpret(default_env, program));
 
 export default run;

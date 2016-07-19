@@ -6,28 +6,25 @@ const default_env = {id: 0, nodes: []};
 const process = (env, node) => matchOn('nodeName')({
   sourceAlpha:   () => env,
   sourceGraphic: () => env,
-  _: node => {
-    const output = {
-      ...node.toJS(),
-      result: env.id
-    };
-    return {
+  _: node => ({
       id:     env.id+1,
-      nodes:  [...env.nodes, output],
-    };
-  }
+      nodes:  [...env.nodes, {
+        ...node.toJS(),
+        result: env.id
+      }],
+    })
 })(node);
 const result = (env, node) => matchOn('nodeName')({
   sourceAlpha:   () => 'SourceAlpha',
   sourceGraphic: () => 'SourceGraphic',
   _:             () => env.id
-});
+})(node);
 const interpret = (env, program) => {
   return match({
     IMPURE: ({next, result: node}) => {
       const next_result  = result(env, node);
       const next_env     = process(env, node);
-      const next_program = next(result);
+      const next_program = next(next_result);
       return interpret(next_env, next_program);
     },
     PURE:   () => env.nodes

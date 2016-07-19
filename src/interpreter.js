@@ -2,33 +2,25 @@ import match from './match';
 import {matchOn} from './match';
 
 // Convert a free monad representation into a JSON representation
-const default_env = {id: 0, nodes: []};
 const process = (env, node) => matchOn('nodeName')({
-  sourceAlpha:   () => env,
-  sourceGraphic: () => env,
-  _: node => ({
-      id:     env.id+1,
-      nodes:  [...env.nodes, {
-        ...node.toJS(),
-        result: env.id
-      }],
-    })
+  sourceAlpha:   ()   => env,
+  sourceGraphic: ()   => env,
+  _:             node => ({
+    id:     env.id+1,
+    nodes:  [...env.nodes, {
+      ...node.toJS(),
+      result: env.id
+    }],
+  })
 })(node);
 const result = (env, node) => matchOn('nodeName')({
   sourceAlpha:   () => 'SourceAlpha',
   sourceGraphic: () => 'SourceGraphic',
   _:             () => env.id
 })(node);
-const interpret = (env, program) => {
-  return match({
-    IMPURE: ({next, result: node}) => {
-      const next_result  = result(env, node);
-      const next_env     = process(env, node);
-      const next_program = next(next_result);
-      return interpret(next_env, next_program);
-    },
-    PURE:   () => env.nodes
-  })(program);
+const interpret = (program) => {
+  const start = {id: 0, nodes: []};
+  return program.iterate(start, process, result).nodes;
 };
 
 // Remove unused nodes from the output
@@ -45,6 +37,6 @@ const prune_once = (nodes) => {
 };
 
 
-const run = program => prune(interpret(default_env, program));
+const run = program => prune(interpret(program));
 
 export default run;

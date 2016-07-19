@@ -34,4 +34,12 @@ export default class Free {
   flatMap(f){
     return this.map(f).flatten();
   }
+  iterate(ctx, change, step, done){
+    return match({
+      IMPURE: ({next, result}) =>
+        next(step(ctx, result))
+          .iterate(change(ctx, result), change, step, done),
+      PURE:   () => ctx
+    })(this);
+  }
 }

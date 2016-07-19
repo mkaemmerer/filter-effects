@@ -2,24 +2,24 @@ import match from './match';
 import {matchOn} from './match';
 
 // Convert a free monad representation into a JSON representation
-const process = (env, node) => matchOn('nodeName')(node)({
-  sourceAlpha:   ()   => env,
-  sourceGraphic: ()   => env,
-  _:             node => ({
-    id:     env.id+1,
-    nodes:  [...env.nodes, {
-      ...node.toJS(),
-      result: env.id
-    }],
-  })
-});
-const result = (env, node) => matchOn('nodeName')(node)({
-  sourceAlpha:   () => 'SourceAlpha',
-  sourceGraphic: () => 'SourceGraphic',
-  _:             () => env.id
-});
 const interpret = (program) => {
   const start = {id: 0, nodes: []};
+  const process = (env, node) => matchOn('nodeName')(node)({
+    sourceAlpha:   ()   => env,
+    sourceGraphic: ()   => env,
+    _:             node => ({
+      id:     env.id+1,
+      nodes:  [...env.nodes, {
+        ...node.toJS(),
+        result: env.id
+      }],
+    })
+  });
+  const result = (env, node) => matchOn('nodeName')(node)({
+    sourceAlpha:   () => 'SourceAlpha',
+    sourceGraphic: () => 'SourceGraphic',
+    _:             () => env.id
+  });
   return program.iterate(start, process, result).nodes;
 };
 

@@ -1,5 +1,5 @@
-import { Monad, run, create }  from '../../../index';
-import * as f from '../../../index';
+import { Monad, run, create }  from 'filter-effects';
+import * as f from 'filter-effects';
 
 
 const crossFade = (x, y, amt) => Monad.do(function *() {

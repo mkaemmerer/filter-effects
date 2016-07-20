@@ -1,0 +1,24 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "author": "Matt Kaemmerer <matthew.kaemmerer@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "cross-env": "^2.0.0",
+    "webpack": "^1.13.1"
+  },
+  "scripts": {
+    "prewebpack": "mkdirp dist",
+    "webpack": "webpack",
+    "start": "npm install && npm run webpack && open ./index.html"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.9.2"
+  }
+}

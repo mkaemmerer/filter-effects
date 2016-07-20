@@ -20,55 +20,59 @@ const patternFill = {
   ]
 };
 
-export default function build(nodes, filterAttrs = {}){
-  const filters = inits(nodes)
-    .map((ns, i) => ({
-      nodeName: 'filter', children: ns, ...filterAttrs, id: `debug-${i}`
-    }));
-  const clipPaths = filters
-    .map((filter, i) => ({
-      nodeName: 'clipPath',
-      id:       `debug-clip-${i}`,
-      children: [{
-        nodeName: 'rect',
-        x: '10',
-        y: `${10 + i * HEIGHT}`,
-        width:  WIDTH,
-        height: HEIGHT,
-      }]
-    }));
-  const backgrounds = filters
-    .map((filter, i) => ({
+
+const makeFilter   = (filterAttrs) => (ns, i) => ({
+  nodeName: 'filter', children: ns, ...filterAttrs, id: `debug-${i+1}`
+});
+const makeSample   = (ns, i) => ({
+  image: {
+    nodeName:     'image',
+    'xlink:href': '../scene.svg',
+    'clip-path':  `url("#debug-clip-${i}")`,
+    style:        ns.length ? `filter: url("#debug-${i}")` : '',
+    x:      '10',
+    y:      `${10 + i * HEIGHT}`,
+    width:  WIDTH,
+    height: HEIGHT
+  },
+  background: {
+    nodeName: 'rect',
+    style:    `fill: url("#debug-pattern-fill")`,
+    x:      '10',
+    y:      `${10 + i * HEIGHT}`,
+    width:  WIDTH,
+    height: HEIGHT
+  },
+  clipPath: {
+    nodeName: 'clipPath',
+    id:       `debug-clip-${i}`,
+    children: [{
       nodeName: 'rect',
-      style:    `fill: url("#debug-pattern-fill")`,
       x: '10',
       y: `${10 + i * HEIGHT}`,
       width:  WIDTH,
-      height: HEIGHT
-    }));
-  const samples = filters
-    .map((filter, i) => ({
-      nodeName: 'image',
-      'xlink:href': '../scene.svg',
-      'clip-path':  `url("#debug-clip-${i}")`,
-      style:        `filter: url("#debug-${i}")`,
-      x: '10',
-      y: `${10 + i * HEIGHT}`,
-      width:  WIDTH,
-      height: HEIGHT
-    }));
+      height: HEIGHT,
+    }]
+  }
+});
+
+export default function build(nodes, filterAttrs = {}){
+  const passes = inits(nodes);
+
+  const filters = passes.map(makeFilter(filterAttrs));
+  const samples = [[], ...passes].map(makeSample);
 
   const svg = {
     nodeName: 'svg',
     width:    (20 + WIDTH),
-    height:   (20 + nodes.length * HEIGHT),
-    viewBox:  `0 0 ${(20 + WIDTH)} ${(20 + nodes.length * HEIGHT)}`,
+    height:   (20 + (nodes.length + 1) * HEIGHT),
+    viewBox:  `0 0 ${(20 + WIDTH)} ${(20 + (nodes.length + 1) * HEIGHT)}`,
     children: [{
         nodeName: 'defs',
-        children: [patternFill, ...filters, ...clipPaths]
+        children: [patternFill, ...filters, ...samples.map(s => s.clipPath)]
       },
-      ...backgrounds,
-      ...samples
+      ...samples.map(s => s.background),
+      ...samples.map(s => s.image)
     ]
   };
 

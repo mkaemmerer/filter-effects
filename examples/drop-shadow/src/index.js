@@ -1,9 +1,9 @@
 import { Monad, run, create }  from '../../../index';
-import * as n from '../../../index';
+import * as f from '../../../index';
 
 
 const crossFade = (x, y, amt) => Monad.do(function *() {
-  const attenuated = yield n.feColorMatrix({
+  const attenuated = yield f.feColorMatrix({
     in: x,
     type: 'matrix',
     values: `1 0 0  0     0
@@ -11,7 +11,7 @@ const crossFade = (x, y, amt) => Monad.do(function *() {
              0 0 1  0     0
              0 0 0 ${amt} 0`
   });
-  const blend      = yield n.feBlend({
+  const blend      = yield f.feBlend({
     in:  attenuated,
     in2: y,
     mode: 'normal'
@@ -21,7 +21,7 @@ const crossFade = (x, y, amt) => Monad.do(function *() {
 });
 
 const dropShadow = source => Monad.do(function *() {
-  const alpha    = yield n.feColorMatrix({
+  const alpha    = yield f.feColorMatrix({
     in: source,
     type: 'matrix',
     values: `0 0 0 0 0
@@ -29,15 +29,15 @@ const dropShadow = source => Monad.do(function *() {
              0 0 0 0 0
              0 0 0 1 0`
   });
-  const shadow     = yield n.feGaussianBlur({
+  const shadow     = yield f.feGaussianBlur({
     in: alpha,
     stdDeviation: 2
   });
-  const shifted    = yield n.feOffset({
+  const shifted    = yield f.feOffset({
     in: shadow,
     dy: 5
   });
-  const full       = yield n.feBlend({
+  const full       = yield f.feBlend({
     in:  source,
     in2: shifted,
     mode: 'normal'
@@ -48,7 +48,7 @@ const dropShadow = source => Monad.do(function *() {
 });
 
 const program = Monad.do(function *() {
-  const source = yield n.sourceGraphic();
+  const source = yield f.sourceGraphic();
   const shadow = yield dropShadow(source);
   return Monad.of(shadow);
 });

@@ -26,9 +26,9 @@ export default function build(nodes, filterAttrs = {}){
   const samples = filters
     .map((filter, i) => ({
       nodeName: 'image',
-      ['xlink:href']: '../scene.svg',
-      ['clip-path']:  `url("#debug-clip-${i}")`,
-      style:          `filter: url("#debug-${i}")`,
+      'xlink:href': '../scene.svg',
+      'clip-path':  `url("#debug-clip-${i}")`,
+      style:        `filter: url("#debug-${i}")`,
 
       x: '10',
       y: `${10 + i * HEIGHT}`,

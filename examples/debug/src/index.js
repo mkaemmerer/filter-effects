@@ -1,6 +1,6 @@
-import { Monad, run, create }  from '../../../index';
-import * as f from '../../../index';
-import build from '../../../src/extras/debug';
+import { Monad, run, create }  from 'filter-effects';
+import * as f from 'filter-effects';
+import build from 'filter-effects/src/extras/debug';
 
 
 const crossFade = (x, y, amt) => Monad.do(function *() {

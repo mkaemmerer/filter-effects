@@ -1,10 +1,6 @@
-import createElement from '../create-element';
-
 const WIDTH  = 150;
 const HEIGHT = 100;
 
-const inits = array =>
-  array.map((_, i) => array.slice(0, i+1));
 
 const patternFill = {
   nodeName:     'pattern',
@@ -20,18 +16,20 @@ const patternFill = {
   ]
 };
 
-
-const makeFilter   = (filterAttrs) => (ns, i) => ({
-  nodeName: 'filter', children: ns, ...filterAttrs, id: `debug-${i+1}`
+const makeFilter   = ({nodes, filterAttrs, order}) => ({
+  nodeName: 'filter',
+  children: nodes,
+  ...filterAttrs,
+  id: `debug-${order}`
 });
-const makeSample   = (ns, i) => ({
+const makeSample   = ({nodes, order}) => ({
   image: {
     nodeName:     'image',
     'xlink:href': '../scene.svg',
-    'clip-path':  `url("#debug-clip-${i}")`,
-    style:        ns.length ? `filter: url("#debug-${i}")` : '',
+    'clip-path':  `url("#debug-clip-${order}")`,
+    style:        nodes.length ? `filter: url("#debug-${order}")` : '',
     x:      '10',
-    y:      `${10 + i * HEIGHT}`,
+    y:      `${10 + order * HEIGHT}`,
     width:  WIDTH,
     height: HEIGHT
   },
@@ -39,34 +37,34 @@ const makeSample   = (ns, i) => ({
     nodeName: 'rect',
     style:    `fill: url("#debug-pattern-fill")`,
     x:      '10',
-    y:      `${10 + i * HEIGHT}`,
+    y:      `${10 + order * HEIGHT}`,
     width:  WIDTH,
     height: HEIGHT
   },
   clipPath: {
     nodeName: 'clipPath',
-    id:       `debug-clip-${i}`,
+    id:       `debug-clip-${order}`,
     children: [{
       nodeName: 'rect',
       x: '10',
-      y: `${10 + i * HEIGHT}`,
+      y: `${10 + order * HEIGHT}`,
       width:  WIDTH,
       height: HEIGHT,
     }]
   }
 });
 
-export default function build(nodes, filterAttrs = {}){
-  const passes = inits(nodes);
-
-  const filters = passes.map(makeFilter(filterAttrs));
-  const samples = [[], ...passes].map(makeSample);
+export default function drawGraph(graph){
+  const filters = graph
+    .filter(vertex => vertex.nodes.length > 0)
+    .map(makeFilter);
+  const samples = graph.map(makeSample);
 
   const svg = {
     nodeName: 'svg',
     width:    (20 + WIDTH),
-    height:   (20 + (nodes.length + 1) * HEIGHT),
-    viewBox:  `0 0 ${(20 + WIDTH)} ${(20 + (nodes.length + 1) * HEIGHT)}`,
+    height:   (20 + (graph.length + 1) * HEIGHT),
+    viewBox:  `0 0 ${(20 + WIDTH)} ${(20 + (graph.length + 1) * HEIGHT)}`,
     children: [{
         nodeName: 'defs',
         children: [patternFill, ...filters, ...samples.map(s => s.clipPath)]
@@ -76,5 +74,5 @@ export default function build(nodes, filterAttrs = {}){
     ]
   };
 
-  return createElement(svg);
+  return svg;
 }

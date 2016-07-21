@@ -12,18 +12,18 @@ const patternFill = {
   ]
 };
 
-const makeFilter   = ({nodes, filterAttrs, order}) => ({
+const makeFilter   = ({filterEffects, filterAttrs, order}) => ({
   nodeName: 'filter',
-  children: nodes,
+  children: filterEffects,
   ...filterAttrs,
   id: `debug-${order}`
 });
-const makeSample   = ({nodes, order, bounds}) => ({
+const makeSample   = ({filterEffects, order, bounds}) => ({
   image: {
     nodeName:     'image',
     'xlink:href': '../scene.svg',
     'clip-path':  `url("#debug-clip-${order}")`,
-    style:        nodes.length ? `filter: url("#debug-${order}")` : '',
+    style:        filterEffects.length ? `filter: url("#debug-${order}")` : '',
     ...bounds
   },
   background: {
@@ -40,12 +40,18 @@ const makeSample   = ({nodes, order, bounds}) => ({
     }]
   }
 });
+const makePath = ({points}) => ({
+  nodeName: 'path',
+  d: 'M' + points.map(({x,y}) => `${x}, ${y}`).join('L'),
+  style: 'fill: none; stroke: #333;'
+});
 
-export default function drawGraph({graph, bounds}){
-  const filters = graph
-    .filter(vertex => vertex.nodes.length > 0)
+export default function drawGraph({nodes, edges, bounds}){
+  const filters = nodes
+    .filter(f => f.filterEffects.length > 0)
     .map(makeFilter);
-  const samples = graph.map(makeSample);
+  const samples = nodes.map(makeSample);
+  const paths   = edges.map(makePath);
 
   const svg = {
     nodeName: 'svg',
@@ -56,6 +62,7 @@ export default function drawGraph({graph, bounds}){
         nodeName: 'defs',
         children: [patternFill, ...filters, ...samples.map(s => s.clipPath)]
       },
+      ...paths,
       ...samples.map(s => s.background),
       ...samples.map(s => s.image)
     ]

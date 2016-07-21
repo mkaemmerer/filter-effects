@@ -1,7 +1,3 @@
-const WIDTH  = 150;
-const HEIGHT = 100;
-
-
 const patternFill = {
   nodeName:     'pattern',
   id:           'debug-pattern-fill',
@@ -22,39 +18,30 @@ const makeFilter   = ({nodes, filterAttrs, order}) => ({
   ...filterAttrs,
   id: `debug-${order}`
 });
-const makeSample   = ({nodes, order}) => ({
+const makeSample   = ({nodes, order, bounds}) => ({
   image: {
     nodeName:     'image',
     'xlink:href': '../scene.svg',
     'clip-path':  `url("#debug-clip-${order}")`,
     style:        nodes.length ? `filter: url("#debug-${order}")` : '',
-    x:      '10',
-    y:      `${10 + order * HEIGHT}`,
-    width:  WIDTH,
-    height: HEIGHT
+    ...bounds
   },
   background: {
     nodeName: 'rect',
     style:    `fill: url("#debug-pattern-fill")`,
-    x:      '10',
-    y:      `${10 + order * HEIGHT}`,
-    width:  WIDTH,
-    height: HEIGHT
+    ...bounds
   },
   clipPath: {
     nodeName: 'clipPath',
     id:       `debug-clip-${order}`,
     children: [{
       nodeName: 'rect',
-      x: '10',
-      y: `${10 + order * HEIGHT}`,
-      width:  WIDTH,
-      height: HEIGHT,
+      ...bounds
     }]
   }
 });
 
-export default function drawGraph(graph){
+export default function drawGraph({graph, bounds}){
   const filters = graph
     .filter(vertex => vertex.nodes.length > 0)
     .map(makeFilter);
@@ -62,9 +49,9 @@ export default function drawGraph(graph){
 
   const svg = {
     nodeName: 'svg',
-    width:    (20 + WIDTH),
-    height:   (20 + (graph.length + 1) * HEIGHT),
-    viewBox:  `0 0 ${(20 + WIDTH)} ${(20 + (graph.length + 1) * HEIGHT)}`,
+    width:    bounds.width,
+    height:   bounds.height,
+    viewBox:  `0 0 ${bounds.width} ${bounds.height}`,
     children: [{
         nodeName: 'defs',
         children: [patternFill, ...filters, ...samples.map(s => s.clipPath)]

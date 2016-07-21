@@ -6,18 +6,15 @@ const usesSource = (name) => (node) =>
 
 export default function makeGraph(nodes, filterAttrs = {}){
   const sourceGraphic = {
-    order:  0,
     result: 'SourceGraphic',
     nodes:  []
   };
   const sourceAlpha   = {
-    order:  1,
     result: 'SourceAlpha',
     nodes:  []
   };
   const filtered      = inits(nodes)
     .map((ns, i) => ({
-      order:  i+2,
       result: ns[ns.length-1].result,
       nodes:  ns,
       filterAttrs
@@ -31,5 +28,9 @@ export default function makeGraph(nodes, filterAttrs = {}){
   if(nodes.find(usesSource('SourceGraphic'))){
     result.unshift(sourceGraphic);
   }
+  result.forEach((node, index) => {
+    node.order = index;
+  });
+
   return result;
 }

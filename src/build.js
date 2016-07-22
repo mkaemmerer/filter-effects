@@ -15,17 +15,21 @@ const createElement = ({nodeName, children = [], ...attrs}) => {
   return element;
 };
 
-export function build(nodes, filterAttrs = {}){
-  return createElement({nodeName: 'filter', children: nodes, ...filterAttrs});
+export function build({filterEffects, filterAttrs}){
+  return createElement({
+    nodeName: 'filter',
+    ...filterAttrs,
+    children: filterEffects
+  });
 }
 
-export function create(nodes, filterAttrs = {}){
+export function create({filterEffects, filterAttrs}){
   const svg = createElement({
     nodeName: 'svg',
     height: '0',
     children: [{
       nodeName: 'defs',
-      children: [{nodeName: 'filter', children: nodes, ...filterAttrs}]
+      children: [{nodeName: 'filter', ...filterAttrs, children: filterEffects}]
     }]
   });
   document.body.appendChild(svg);

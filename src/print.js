@@ -8,8 +8,8 @@ const printNode = node => {
   return `<${nodeName} ${printAttrs(attrs)}/>`;
 };
 
-export default function print(nodes, filterAttrs = {}){
-  const children = nodes.map(printNode)
+export default function print({filterEffects, filterAttrs}){
+  const children = filterEffects.map(printNode)
     .join('\n');
 
   return `<filter ${printAttrs(filterAttrs)}>\n${children}\n</filter>`;

@@ -1,8 +1,8 @@
-import { Monad, run, create }  from 'filter-effects';
+import Filter from 'filter-effects';
 import * as f from 'filter-effects';
 
 
-const crossFade = (x, y, amt) => Monad.do(function *() {
+const crossFade = (x, y, amt) => Filter.do(function *() {
   const attenuated = yield f.feColorMatrix({
     in: x,
     type: 'matrix',
@@ -17,10 +17,10 @@ const crossFade = (x, y, amt) => Monad.do(function *() {
     mode: 'normal'
   });
 
-  return Monad.of(blend);
+  return Filter.of(blend);
 });
 
-const dropShadow = source => Monad.do(function *() {
+const innerShadow = source => Filter.do(function *() {
   const inverse    = yield f.feColorMatrix({
     in: source,
     type: 'matrix',
@@ -49,21 +49,21 @@ const dropShadow = source => Monad.do(function *() {
   });
   const blend      = yield crossFade(source, full, 0.7);
 
-  return Monad.of(blend);
+  return Filter.of(blend);
 });
 
-const program = Monad.do(function *() {
+const program = Filter.do(function *() {
   const source = yield f.sourceGraphic();
-  const shadow = yield dropShadow(source);
-  return Monad.of(shadow);
+  const shadow = yield innerShadow(source);
+  return Filter.of(shadow);
 });
 
-const filterAttrs = {
+const filter = Filter(program, {
   id:     'inner-shadow',
   x0:     '-50%',
   y0:     '-50%',
   width:  '200%',
   height: '200%'
-};
+});
 
-create(run(program), filterAttrs);
+filter.create();

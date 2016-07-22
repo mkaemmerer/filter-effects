@@ -1,6 +1,6 @@
 {
   "name": "filter-effects",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Free monad for creating svg filter effects",
   "main": "index.js",
   "scripts": {

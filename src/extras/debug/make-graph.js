@@ -4,7 +4,7 @@ const inits = array =>
 const usesSource = (name) => (filterEffect) =>
   filterEffect.in === name || filterEffect.in2 === name;
 
-export default function makeGraph(filterEffects, filterAttrs = {}){
+export default function makeGraph({filterEffects, filterAttrs}){
   const sourceGraphic = {
     result: 'SourceGraphic',
     filterEffects:  []

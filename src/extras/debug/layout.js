@@ -5,7 +5,7 @@ const HEIGHT = 100;
 
 const initGraph = () => {
   const graph = new dagre.graphlib.Graph();
-  graph.setGraph({ marginx: 20, marginy: 20 });
+  graph.setGraph({ marginx: 50, marginy: 50 });
   graph.setDefaultEdgeLabel(() => ({}));
   return graph;
 };

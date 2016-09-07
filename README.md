@@ -2,8 +2,27 @@
 
 A library for writing SVG filter effects using the convenience of generators.
 
+## Table of Contents
 
-### Composing filter effects
+- [Why Filter Effects?](#why-filter-effects)
+	- [Compose Effects](#compose-effects)
+	- [Reuse Common Patterns](#reuse-common-patterns)
+- [Examples](#examples)
+	- [Simple example](#simple-example)
+	- [More examples](#more-examples)
+- [API Reference](#api-reference)
+	- [Filter](#filter)
+	- [Filter.do](#filterdo)
+	- [Filter.of](#filterof)
+	- [filter#build](#filterbuild)
+	- [filter#create](#filtercreate)
+	- [filter#print](#filterprint)
+	- [Effects](#effects)
+	- [Sources](#sources)
+
+
+## Why Filter Effects?
+### Compose Effects
 
 Consider these two filter effects. One of them applies a gooey effect to shapes,
 the other applies a drop shadow.
@@ -46,7 +65,7 @@ to make sure there were no name collisions between the two effects.
 By using the `filter-effects` library, you can compose effects without copying
 and renaming. Here are the same effects rewritten using javascript.
 
-```javascript
+```es6
 let filterGoo = (source) => Filter.do(function *(){
   let blur   = yield feGaussianBlur({ in: source, stdDeviation: 7 });
   let goo    = yield feColorMatrix({ in: blur, mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" });
@@ -72,3 +91,109 @@ let compose = (f1, f2) => (source) => Filter.do(function *(){
 
 let filterGooThenShadow = compose(filterGoo, filterShadow);
 ```
+
+### Reuse Common Patterns
+
+Many filter effects use common patterns. Using the `filter-effects` library, you
+can extract these patterns into reusable functions. For example, here is a
+helper function that loads an external image and tiles it.
+
+```es6
+let tiledImage = (path) => Filter.do(function *(){
+  let image = yield feImage({"xlink:href": path});
+  let tiled = yield feTile({ in: image });
+  return Filter.of(tiled);
+});
+```
+
+## Examples
+
+### Simple example
+
+```es6
+import Filter from 'filter-effects';
+import { sourceGraphic, feGaussianBlur, feColorMatrix, feComposite } from 'filter-effects';
+
+let program => Filter.do(function *(){
+  let source = yield sourceGraphic();
+  let blur   = yield feGaussianBlur({ in: source, stdDeviation: 7 });
+  let goo    = yield feColorMatrix({ in: blur, mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" });
+  let result = yield feComposite({ in: source, in2: goo });
+  return Filter.of(result);
+});
+
+let filter = Filter(program, {id: 'filter-goo' });
+filter.print();
+//  <filter id="filter-goo">
+//  <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="0"/>
+//  <feColorMatrix in="0" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="1"/>
+//  <feComposite in="SourceGraphic" in2="1" result="2"/>
+//  </filter>
+```
+
+### More examples
+
+You can find more examples in the examples directory.
+
+
+## API Reference
+
+### Filter
+#### `Filter(program [, attrs])`
+
+Make a filter from a filter program. Typically, filter programs will be created using `Filter.do`. This object can later be added to the document using `filter#create`, or printed as an XML string using `filter#print`. You can optionally specify any attributes you want to set on the resulting `<filter>` SVG node.
+
+### Filter.do
+#### `Filter.do(generator)`
+
+Make a filter program from a generator function. This program can be passed to `Filter` to create a filter object.
+
+### Filter.of
+#### `Filter.of(label)`
+
+Convert a label to a filter program. Typically, you will use `Filter.of` to wrap the return value of a generator passed to `Filter.do`.
+
+
+### filter#build
+#### `filter.build()`
+
+Create SVG DOM nodes for a filter. Does not append them to the document.
+
+### filter#create
+#### `filter.create()`
+
+Create SVG DOM nodes for a filter and append them to the document. Also wraps the filter nodes in `<svg>` and `<defs>` nodes.
+
+### filter#print
+#### `filter.print()`
+
+Write the filter to a string as XML.
+
+
+### Effects
+* feBlend(attrs)
+* feColorMatrix(attrs)
+* feComponentTransfer(attrs)
+* feComposite(attrs)
+* feConvolveMatrix(attrs)
+* feDiffuseLighting(attrs)
+* feDisplacementMap(attrs)
+* feFlood(attrs)
+* feGaussianBlur(attrs)
+* feImage(attrs)
+* feMerge(attrs)
+* feMergeNode(attrs)
+* feMorphology(attrs)
+* feOffset(attrs)
+* feSpecularLighting(attrs)
+* feTile(attrs)
+* feTurbulence(attrs)
+
+Append a filter effect to the program with the given attributes and return a unique `result` label for the node.
+
+
+### Sources
+* sourceGraphic()
+* sourceAlpha()
+
+Return a label for the source graphic or source alpha that can be passed to an effect as `in` or `in2`.

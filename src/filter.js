@@ -22,7 +22,7 @@ class Filter {
 const Factory = (program, filterAttrs) =>
   new Filter(program, filterAttrs);
 
-Factory.do = Monad.do;
-Factory.of = Monad.of;
+Factory.do   = Monad.do;
+Factory.done = Monad.of;
 
 export default Factory;

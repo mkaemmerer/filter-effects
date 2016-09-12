@@ -13,7 +13,7 @@ A library for writing SVG filter effects using the convenience of generators.
 - [API Reference](#api-reference)
 	- [Filter](#filter)
 	- [Filter.do](#filterdo)
-	- [Filter.of](#filterof)
+	- [Filter.done](#filterdone)
 	- [filter#build](#filterbuild)
 	- [filter#create](#filtercreate)
 	- [filter#print](#filterprint)
@@ -71,7 +71,7 @@ let filterGoo = (source) => Filter.do(function *(){
   let goo    = yield feColorMatrix({ in: blur, mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" });
   let result = yield feComposite({ in: source, in2: goo });
 
-  return Filter.of(result);
+  return Filter.done(result);
 });
 let filterShadow = (source) => Filter.do(function *(){
   let fill   = yield feFlood({ 'flood-color': '#444' });
@@ -80,13 +80,13 @@ let filterShadow = (source) => Filter.do(function *(){
   let offset = yield feOffset({ in: blur, dx: 0, dy: 5 });
   let result = yield feBlend({ in: source, in2: offset, mode: "normal" });
 
-  return Filter.of(result);
+  return Filter.done(result);
 });
 let compose = (f1, f2) => (source) => Filter.do(function *(){
   let result1 = yield f1(source);
   let result2 = yield f2(result1);
 
-  return Filter.of(result2);
+  return Filter.done(result2);
 });
 
 let filterGooThenShadow = compose(filterGoo, filterShadow);
@@ -102,7 +102,7 @@ helper function that loads an external image and tiles it.
 let tiledImage = (path) => Filter.do(function *(){
   let image = yield feImage({"xlink:href": path});
   let tiled = yield feTile({ in: image });
-  return Filter.of(tiled);
+  return Filter.done(tiled);
 });
 ```
 
@@ -119,7 +119,7 @@ let program => Filter.do(function *(){
   let blur   = yield feGaussianBlur({ in: source, stdDeviation: 7 });
   let goo    = yield feColorMatrix({ in: blur, mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" });
   let result = yield feComposite({ in: source, in2: goo });
-  return Filter.of(result);
+  return Filter.done(result);
 });
 
 let filter = Filter(program, {id: 'filter-goo' });
@@ -148,10 +148,10 @@ Make a filter from a filter program. Typically, filter programs will be created 
 
 Make a filter program from a generator function. This program can be passed to `Filter` to create a filter object.
 
-### Filter.of
-#### `Filter.of(label)`
+### Filter.done
+#### `Filter.done(label)`
 
-Convert a label to a filter program. Typically, you will use `Filter.of` to wrap the return value of a generator passed to `Filter.do`.
+Convert a label to a filter program. Typically, you will use `Filter.done` to wrap the return value of a generator passed to `Filter.do`.
 
 
 ### filter#build

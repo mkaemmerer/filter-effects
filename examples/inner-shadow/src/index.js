@@ -17,7 +17,7 @@ const crossFade = (x, y, amt) => Filter.do(function *() {
     mode: 'normal'
   });
 
-  return Filter.of(blend);
+  return Filter.done(blend);
 });
 
 const innerShadow = source => Filter.do(function *() {
@@ -49,13 +49,13 @@ const innerShadow = source => Filter.do(function *() {
   });
   const blend      = yield crossFade(source, full, 0.7);
 
-  return Filter.of(blend);
+  return Filter.done(blend);
 });
 
 const program = Filter.do(function *() {
   const source = yield f.sourceGraphic();
   const shadow = yield innerShadow(source);
-  return Filter.of(shadow);
+  return Filter.done(shadow);
 });
 
 const filter = Filter(program, {

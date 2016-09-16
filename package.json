@@ -2,10 +2,11 @@
   "name": "filter-effects",
   "version": "0.2.0",
   "description": "Free monad for creating svg filter effects",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "babel-node test.js",
-    "build": "cross-env BABEL_ENV=production babel-node ./node_modules/webpack/bin/webpack"
+    "build": "cross-env BABEL_ENV=production babel-node ./node_modules/webpack/bin/webpack",
+    "prepublish": "npm run build"
   },
   "author": "",
   "license": "ISC",

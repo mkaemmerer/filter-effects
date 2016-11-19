@@ -1,11 +1,17 @@
-const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+const SVG_NAMESPACE   = 'http://www.w3.org/2000/svg';
+const XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink';
 
 const createElement = ({nodeName, children = [], ...attrs}) => {
   const element = document.createElementNS(SVG_NAMESPACE, nodeName);
 
   Object.keys(attrs)
     .forEach(key => {
-      element.setAttribute(key, attrs[key]);
+      const match = key.match(/^xlink:(.*)/);
+      if(match){
+        element.setAttributeNS(XLINK_NAMESPACE, match[1], attrs[key]);
+      } else {
+        element.setAttribute(key, attrs[key]);
+      }
     });
   children.map(createElement)
     .forEach(child => {

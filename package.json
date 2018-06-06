@@ -1,22 +1,31 @@
 {
-  "name": "filter-effects",
+  "name": "@mkaemmerer/filter-effects",
   "version": "0.3.0",
   "description": "Free monad for creating svg filter effects",
   "main": "dist/index.js",
+  "module": "index",
+  "jsnext:main": "index",
   "scripts": {
     "test": "babel-node test.js",
-    "build": "cross-env BABEL_ENV=production babel-node ./node_modules/webpack/bin/webpack",
+    "build": "babel ./index.js -d dist",
     "prepublish": "npm run build"
   },
-  "author": "",
+  "author": {
+    "name": "Matt Kaemmerer",
+    "email": "matthew.kaemmerer@gmail.com",
+    "url": "http://www.mattsnax.com"
+  },
+  "keywords": [
+    "svg",
+    "filter",
+    "filter-effect",
+    "monad",
+    "free-monad"
+  ],
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.10.1",
-    "babel-core": "^6.10.4",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "cross-env": "^2.0.0",
-    "webpack": "^1.13.1"
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@mkaemmerer/filter-effects",
+  "name": "@mattsnax/filter-effects",
   "version": "0.3.1",
   "description": "Free monad for creating svg filter effects",
   "main": "dist/index.js",

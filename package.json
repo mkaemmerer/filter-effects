@@ -3,8 +3,6 @@
   "version": "0.5.0",
   "description": "Free monad for creating svg filter effects",
   "main": "dist/index.js",
-  "module": "index",
-  "jsnext:main": "index",
   "scripts": {
     "test": "babel-node test.js",
     "build": "webpack --mode production",

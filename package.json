@@ -7,7 +7,7 @@
   "jsnext:main": "index",
   "scripts": {
     "test": "babel-node test.js",
-    "build": "babel ./index.js -d dist",
+    "build": "webpack --mode production",
     "prepublish": "npm run build"
   },
   "author": {
@@ -25,7 +25,11 @@
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.10.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1"
+    "babel-preset-stage-0": "^6.24.1",
+    "webpack": "^4.11.1",
+    "webpack-cli": "^3.0.2"
   }
 }

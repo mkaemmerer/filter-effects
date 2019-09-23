@@ -3,10 +3,12 @@ const printAttrs = attrs =>
     .map(key => `${key}="${attrs[key]}"`)
     .join(' ');
 
-const printNode = node => {
-  const {nodeName, ...attrs} = node;
-  return `<${nodeName} ${printAttrs(attrs)}/>`;
-};
+const printNode = ({nodeName, children, ...attrs}) =>
+  children
+    ? `<${nodeName} ${printAttrs(attrs)}>
+  ${children.map(printNode).join('\n')}
+</${nodeName}>`
+    : `<${nodeName} ${printAttrs(attrs)}/>`;
 
 export default function print({filterEffects, filterAttrs}){
   const children = filterEffects.map(printNode)

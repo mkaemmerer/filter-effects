@@ -1,45 +1,44 @@
-import match from './match';
+import match from "./match"
 
 export default class Free {
-  constructor(type, next, result){
-    this.type   = type;
-    this.next   = next;
-    this.result = result;
+  constructor(type, next, result) {
+    this.type = type
+    this.next = next
+    this.result = result
   }
-  static impure(next, result){
-    return new Free('IMPURE', next, result);
+  static impure(next, result) {
+    return new Free("IMPURE", next, result)
   }
-  static pure(result){
-    return new Free('PURE', undefined, result);
+  static pure(result) {
+    return new Free("PURE", undefined, result)
   }
 
-  map(f){
+  map(f) {
     return match(this)({
-      IMPURE: ({next, result}) => {
-        const f_next = x => next(x).map(f);
-        return Free.impure(f_next, result);
+      IMPURE: ({ next, result }) => {
+        const f_next = (x) => next(x).map(f)
+        return Free.impure(f_next, result)
       },
-      PURE: ({result}) => Free.pure(f(result))
-    });
+      PURE: ({ result }) => Free.pure(f(result)),
+    })
   }
-  flatten(){
+  flatten() {
     return match(this)({
-      IMPURE: ({next, result}) => {
-        const inner_next = x => next(x).flatten();
-        return Free.impure(inner_next, result);
+      IMPURE: ({ next, result }) => {
+        const inner_next = (x) => next(x).flatten()
+        return Free.impure(inner_next, result)
       },
-      PURE: ({result}) => result
-    });
+      PURE: ({ result }) => result,
+    })
   }
-  flatMap(f){
-    return this.map(f).flatten();
+  flatMap(f) {
+    return this.map(f).flatten()
   }
-  fold(ctx, change, step){
+  fold(ctx, change, step) {
     return match(this)({
-      IMPURE: ({next, result}) =>
-        next(step(ctx, result))
-          .fold(change(ctx, result), change, step),
-      PURE:   () => ctx
-    });
+      IMPURE: ({ next, result }) =>
+        next(step(ctx, result)).fold(change(ctx, result), change, step),
+      PURE: () => ctx,
+    })
   }
 }

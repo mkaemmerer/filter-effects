@@ -1,4 +1,4 @@
-import Filter from './src/filter';
+import Filter from "./src/filter"
 
-export * from './src/filter-effect';
-export default Filter;
+export * from "./src/filter-effect"
+export default Filter

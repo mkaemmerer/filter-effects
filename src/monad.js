@@ -1,25 +1,25 @@
-import Free from './free';
+import Free from "./free"
 
-const cached = f => {
-  let value = undefined;
-  return x => {
-    if(value === undefined){
-      value = f(x);
+const cached = (f) => {
+  let value = undefined
+  return (x) => {
+    if (value === undefined) {
+      value = f(x)
     }
-    return value;
-  };
-};
+    return value
+  }
+}
 
 const Monad = {
-  do: gen => {
-    const g    = gen();
-    const step = data => {
-      const {done, value} = g.next(data);
-      return done ? value : value.flatMap(cached(step));
-    };
-    return step();
+  do: (gen) => {
+    const g = gen()
+    const step = (data) => {
+      const { done, value } = g.next(data)
+      return done ? value : value.flatMap(cached(step))
+    }
+    return step()
   },
-  of: Free.pure
-};
+  of: Free.pure,
+}
 
-export default Monad;
+export default Monad

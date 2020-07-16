@@ -1,15 +1,15 @@
-export const matchOn = key => object => cases => {
-  const type = object[key];
+export const matchOn = (key) => (object) => (cases) => {
+  const type = object[key]
 
-  if(cases.hasOwnProperty(type)) {
-    return cases[type](object);
-  } else if(cases.hasOwnProperty('_')) {
-    return cases['_'](object);
+  if (cases.hasOwnProperty(type)) {
+    return cases[type](object)
+  } else if (cases.hasOwnProperty("_")) {
+    return cases["_"](object)
   } else {
-    throw new Error(`Unmatched pattern: ${type}`);
+    throw new Error(`Unmatched pattern: ${type}`)
   }
-};
+}
 
-export const matchType = matchOn('type');
+export const matchType = matchOn("type")
 
-export default matchType;
+export default matchType

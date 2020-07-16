@@ -1,28 +1,27 @@
-import Monad  from './monad';
-import run    from './interpreter';
-import print  from './print';
-import { build, create } from './build';
+import Monad from "./monad"
+import run from "./interpreter"
+import print from "./print"
+import { build, create } from "./build"
 
 class Filter {
-  constructor(program, filterAttrs = {}){
-    this.filterEffects = run(program);
-    this.filterAttrs   = filterAttrs;
+  constructor(program, filterAttrs = {}) {
+    this.filterEffects = run(program)
+    this.filterAttrs = filterAttrs
   }
-  print(){
-    return print(this);
+  print() {
+    return print(this)
   }
-  build(){
-    return build(this);
+  build() {
+    return build(this)
   }
-  create(){
-    return create(this);
+  create() {
+    return create(this)
   }
 }
 
-const Factory = (program, filterAttrs) =>
-  new Filter(program, filterAttrs);
+const Factory = (program, filterAttrs) => new Filter(program, filterAttrs)
 
-Factory.do   = Monad.do;
-Factory.done = Monad.of;
+Factory.do = Monad.do
+Factory.done = Monad.of
 
-export default Factory;
+export default Factory

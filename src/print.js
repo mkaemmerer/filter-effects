@@ -5,10 +5,12 @@ const printAttrs = (attrs) =>
 
 const printNode = ({ nodeName, children, ...attrs }) =>
   children
-    ? `<${nodeName} ${printAttrs(attrs)}>
+    ? `\
+<${nodeName} ${printAttrs(attrs)}>
   ${children.map(printNode).join("\n")}
 </${nodeName}>`
-    : `<${nodeName} ${printAttrs(attrs)}/>`
+    : `\
+<${nodeName} ${printAttrs(attrs)}/>`
 
 export default function print({ filterEffects, filterAttrs }) {
   const children = filterEffects.map(printNode).join("\n")

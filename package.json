@@ -2,10 +2,11 @@
   "name": "@mattsnax/filter-effects",
   "version": "0.8.1",
   "description": "Free monad for creating svg filter effects",
-  "main": "dist/index.js",
+  "source": "index.js",
+  "main": "dist/filter-effects.js",
+  "module": "dist/filter-effects.module.js",
   "scripts": {
-    "test": "babel-node test.js",
-    "build": "webpack --mode production",
+    "build": "microbundle",
     "prepublish": "npm run build"
   },
   "author": {
@@ -22,13 +23,7 @@
   ],
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/node": "^7.6.1",
-    "@babel/preset-env": "^7.6.0",
-    "babel-loader": "^8.0.6",
-    "prettier": "^2.0.5",
-    "webpack": "^4.11.1",
-    "webpack-cli": "^3.0.2"
+    "microbundle": "^0.12.3",
+    "prettier": "^2.0.5"
   }
 }
